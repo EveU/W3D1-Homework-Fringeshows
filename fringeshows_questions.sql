@@ -165,12 +165,61 @@
 -- The following questions can be answered by using nested SQL statements but ideally you should learn about JOIN clauses to answer them.
 
 -- 1. Select the time for the Edinburgh Royal Tattoo.
+-- SELECT time FROM times INNER JOIN shows ON times.show_id = shows.id WHERE shows.name = 'Edinburgh Royal Tattoo';
+--  time  
+-- -------
+--  22:00
+-- (1 row)
 
 -- 2. Select the number of users who want to see "Shitfaced Shakespeare".
+-- SELECT COUNT(user_id) FROM shows_users INNER JOIN shows ON shows_users.show_id = shows.id WHERE shows.name = 'Shitfaced Shakespeare';
+--  count 
+-- -------
+--      7
+-- (1 row)
 
 -- 3. Select all of the user names and the count of shows they're going to see.
+-- SELECT name, COUNT(shows_users.show_id) FROM users INNER JOIN shows_users ON shows_users.user_id = users.id GROUP BY users.id;
+--        name       | count 
+-- ------------------+-------
+--  Nick Riddell     |     5
+--  Nicholas Hill    |     5
+--  Oscar Brooks     |     4
+--  Keith Douglas    |     6
+--  Chris Sloan      |     4
+--  Ross Galloway    |     5
+--  Gary Carmichael  |     4
+--  Callum Dougan    |     4
+--  Michael McLeod   |     6
+--  Rick Henri       |     5
+--  Sky Su           |     5
+--  Callum Hogg      |     4
+--  Evelyn Utterson  |     7
+--  Daniel Gillespie |     4
+--  Jay Chetty       |     5
+--  Andrew Insley    |     4
+--  Bethany Fraser   |     4
+-- (17 rows)
 
 -- 4. SELECT all users who are going to a show at 17:15.
+-- SELECT users.name, shows.name, times.time FROM users INNER JOIN shows_users ON users.id = shows_users.user_id INNER JOIN times ON shows_users.show_id = times.show_id INNER JOIN shows ON shows.id = shows_users.show_id WHERE times.time = '17:15';
+--       name       |                   name                    | time  
+-- -----------------+-------------------------------------------+-------
+--  Rick Henri      | Camille O'Sullivan                        | 17:15
+--  Keith Douglas   | Camille O'Sullivan                        | 17:15
+--  Andrew Insley   | Camille O'Sullivan                        | 17:15
+--  Nick Riddell    | Camille O'Sullivan                        | 17:15
+--  Evelyn Utterson | Camille O'Sullivan                        | 17:15
+--  Callum Hogg     | Camille O'Sullivan                        | 17:15
+--  Gary Carmichael | Camille O'Sullivan                        | 17:15
+--  Nicholas Hill   | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Michael McLeod  | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Callum Hogg     | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Oscar Brooks    | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Ross Galloway   | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+-- (12 rows)
+
+
 
 -- ############ Hints ############
 
