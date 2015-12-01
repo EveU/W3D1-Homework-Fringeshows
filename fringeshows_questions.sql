@@ -73,12 +73,14 @@
 -- DELETE FROM shows_users WHERE user_id = 23;
 -- DELETE 1
 
+--or: DELETE FROM shows_users WHERE user_id NOT IN (SELECT id FROM users);
+
 -- ############ Section 2 ############
 
 -- This section involves more complex queries. You will need to go and find out about aggregate funcions in SQL to answer some of the next questions.
 
 -- 1. Select the names and prices of all shows, ordered by price in ascending order.
--- SELECT name,price FROM shows ORDER BY price;
+-- SELECT name,price FROM shows ORDER BY price ASC;
 --                    name                    | price 
 -- -------------------------------------------+-------
 --  Two girls, one cup of comedy              |  6.00
@@ -132,7 +134,7 @@
 -- (1 row)
 
 -- 7. Select the name and price of the second from cheapest show.
--- SELECT name, price FROM shows ORDER BY price LIMIT 1 OFFSET 1;
+-- SELECT name, price FROM shows ORDER BY price ASC LIMIT 1 OFFSET 1;
 --        name        | price 
 -- -------------------+-------
 --  Best of Burlesque |  7.99
@@ -160,6 +162,8 @@
 --  Gary Carmichael
 -- (2 rows)
 
+-- or: SELECT name FROM users WHERE upper(name) LIKE '%MI%';
+
 -- ############ Section 3 ############
 
 -- The following questions can be answered by using nested SQL statements but ideally you should learn about JOIN clauses to answer them.
@@ -171,6 +175,8 @@
 --  22:00
 -- (1 row)
 
+-- also: SELECT time FROM times t INNER JOIN shows s ON t.show_id = s.id WHERE s.name = 'Edinburgh Royal Tattoo';
+
 -- 2. Select the number of users who want to see "Shitfaced Shakespeare".
 -- SELECT COUNT(user_id) FROM shows_users INNER JOIN shows ON shows_users.show_id = shows.id WHERE shows.name = 'Shitfaced Shakespeare';
 --  count 
@@ -179,42 +185,47 @@
 -- (1 row)
 
 -- 3. Select all of the user names and the count of shows they're going to see.
--- SELECT name, COUNT(shows_users.show_id) FROM users INNER JOIN shows_users ON shows_users.user_id = users.id GROUP BY users.id;
+-- SELECT name, COUNT(shows_users.show_id) FROM users LEFT JOIN shows_users ON shows_users.user_id = users.id GROUP BY users.id ORDER BY count ASC, users.name;
 --        name       | count 
 -- ------------------+-------
---  Nick Riddell     |     5
---  Nicholas Hill    |     5
---  Oscar Brooks     |     4
---  Keith Douglas    |     6
---  Chris Sloan      |     4
---  Ross Galloway    |     5
---  Gary Carmichael  |     4
---  Callum Dougan    |     4
---  Michael McLeod   |     6
---  Rick Henri       |     5
---  Sky Su           |     5
---  Callum Hogg      |     4
---  Evelyn Utterson  |     7
---  Daniel Gillespie |     4
---  Jay Chetty       |     5
+--  Aine Dunphy      |     0
+--  Euan Walls       |     0
+--  Paul MacLean     |     0
+--  Peter Forbes     |     0
+--  Stuart Ramsay    |     0
 --  Andrew Insley    |     4
 --  Bethany Fraser   |     4
--- (17 rows)
+--  Callum Dougan    |     4
+--  Callum Hogg      |     4
+--  Chris Sloan      |     4
+--  Daniel Gillespie |     4
+--  Gary Carmichael  |     4
+--  Oscar Brooks     |     4
+--  Jay Chetty       |     5
+--  Nicholas Hill    |     5
+--  Nick Riddell     |     5
+--  Rick Henri       |     5
+--  Ross Galloway    |     5
+--  Sky Su           |     5
+--  Keith Douglas    |     6
+--  Michael McLeod   |     6
+--  Evelyn Utterson  |     7
+-- (22 rows)
 
 -- 4. SELECT all users who are going to a show at 17:15.
--- SELECT users.name, shows.name, times.time FROM users INNER JOIN shows_users ON users.id = shows_users.user_id INNER JOIN times ON shows_users.show_id = times.show_id INNER JOIN shows ON shows.id = shows_users.show_id WHERE times.time = '17:15';
+-- SELECT users.name, shows.name, times.time FROM users INNER JOIN shows_users ON users.id = shows_users.user_id INNER JOIN times ON shows_users.show_id = times.show_id INNER JOIN shows ON shows.id = shows_users.show_id WHERE times.time = '17:15' ORDER BY shows.name, users.name;
 --       name       |                   name                    | time  
 -- -----------------+-------------------------------------------+-------
---  Rick Henri      | Camille O'Sullivan                        | 17:15
---  Keith Douglas   | Camille O'Sullivan                        | 17:15
 --  Andrew Insley   | Camille O'Sullivan                        | 17:15
---  Nick Riddell    | Camille O'Sullivan                        | 17:15
---  Evelyn Utterson | Camille O'Sullivan                        | 17:15
 --  Callum Hogg     | Camille O'Sullivan                        | 17:15
+--  Evelyn Utterson | Camille O'Sullivan                        | 17:15
 --  Gary Carmichael | Camille O'Sullivan                        | 17:15
---  Nicholas Hill   | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
---  Michael McLeod  | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Keith Douglas   | Camille O'Sullivan                        | 17:15
+--  Nick Riddell    | Camille O'Sullivan                        | 17:15
+--  Rick Henri      | Camille O'Sullivan                        | 17:15
 --  Callum Hogg     | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Michael McLeod  | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
+--  Nicholas Hill   | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
 --  Oscar Brooks    | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
 --  Ross Galloway   | Joe Stilgoe: Songs on Film â€“ The Sequel | 17:15
 -- (12 rows)
